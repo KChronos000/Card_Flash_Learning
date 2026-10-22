@@ -26,7 +26,7 @@ export function Navbar({ grade, onGradeChange }: { grade: GradeLevel | null; onG
           </div>
           <div className="leading-tight">
             <h1 className="text-lg font-bold tracking-tight">
-              FlashLearn <span className="text-primary">TH</span>
+              Flash<span className="text-primary">Learn</span>
             </h1>
             <p className="hidden text-xs text-muted-foreground sm:block">
               ฝึกการ์ดความจำ ม.ปลาย
