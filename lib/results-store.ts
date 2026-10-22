@@ -1,5 +1,4 @@
-// LocalStorage-backed anonymous results store.
-// No names or personal identifiers — only grade level, scores, and timing.
+import { supabase } from './supabase';
 
 export type GradeLevel = 'ม.4' | 'ม.5' | 'ม.6';
 
@@ -13,54 +12,62 @@ export interface TestResult {
   postScore: number;
   totalQuestions: number;
   durationSec: number;
-  improvementPct: number; // post - pre as a percentage of total
-  completedAt: string; // ISO
+  improvementPct: number; 
+  completedAt: string; 
 }
 
-const KEY = 'flashlearn_results_v1';
-const EVENT = 'flashlearn_results_updated';
+// แปลง snake_case (DB) -> camelCase (app)
+function fromRow(r: any): TestResult {
+  return {
+    id: r.id,
+    grade: r.grade,
+    topicId: r.topic_id,
+    topicName: r.topic_name,
+    subjectId: r.subject_id,
+    preScore: r.pre_score,
+    postScore: r.post_score,
+    totalQuestions: r.total_questions,
+    durationSec: r.duration_sec,
+    improvementPct: Number(r.improvement_pct),
+    completedAt: r.completed_at,
+  };
+}
 
-function readAll(): TestResult[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = window.localStorage.getItem(KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
+export async function getAllResults(): Promise<TestResult[]> {
+  const { data, error } = await supabase
+    .from('test_results')
+    .select('*')
+    .order('completed_at', { ascending: false });
+  if (error) {
+    console.error(error);
     return [];
   }
+  return (data ?? []).map(fromRow);
 }
 
-function writeAll(results: TestResult[]) {
-  if (typeof window === 'undefined') return;
-  window.localStorage.setItem(KEY, JSON.stringify(results));
-  window.dispatchEvent(new CustomEvent(EVENT));
-}
-
-export function getAllResults(): TestResult[] {
-  return readAll();
-}
-
-export function saveResult(result: Omit<TestResult, 'id' | 'completedAt'>): TestResult {
-  const full: TestResult = {
-    ...result,
-    id:
-      typeof crypto !== 'undefined' && 'randomUUID' in crypto
-        ? crypto.randomUUID()
-        : `r-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    completedAt: new Date().toISOString(),
-  };
-  const all = readAll();
-  all.push(full);
-  writeAll(all);
-  return full;
-}
-
-export function clearResults() {
-  if (typeof window === 'undefined') return;
-  window.localStorage.removeItem(KEY);
-  window.dispatchEvent(new CustomEvent('flashlearn_results_updated'));
+export async function saveResult(
+  result: Omit<TestResult, 'id' | 'completedAt'>
+): Promise<TestResult | null> {
+  const { data, error } = await supabase
+    .from('test_results')
+    .insert({
+      grade: result.grade,
+      topic_id: result.topicId,
+      topic_name: result.topicName,
+      subject_id: result.subjectId,
+      pre_score: result.preScore,
+      post_score: result.postScore,
+      total_questions: result.totalQuestions,
+      duration_sec: result.durationSec,
+      improvement_pct: result.improvementPct,
+    })
+    .select()
+    .single();
+  if (error) {
+    console.error(error);
+    return null;
+  }
+  return fromRow(data);
 }
 
 // Aggregations used by the analytics dashboard.

@@ -106,25 +106,32 @@ export default function Home() {
     setPreDone(true);
   }
 
-  function handlePosttestComplete(score: number) {
-    setPostScore(score);
-    if (!topic || !grade || !startTimeRef.current) return;
-    const durationSec = Math.round((Date.now() - startTimeRef.current) / 1000);
-    const improvementPct = (quiz.length ? (score - preScore) / quiz.length : 0) * 100;
-    const result = saveResult({
-      grade: topic.level,
-      topicId: topic.id,
-      topicName: topic.name,
-      subjectId: topic.subjectId,
-      preScore,
-      postScore: score,
-      totalQuestions: quiz.length,
-      durationSec,
-      improvementPct,
-    });
-    setSavedResult(result);
-    setStage('summary');
+async function handlePosttestComplete(score: number) {
+  setPostScore(score);
+  if (!topic || !grade || !startTimeRef.current) return;
+  const durationSec = Math.round((Date.now() - startTimeRef.current) / 1000);
+  const improvementPct = (quiz.length ? (score - preScore) / quiz.length : 0) * 100;
+
+  const result = await saveResult({
+    grade: topic.level,
+    topicId: topic.id,
+    topicName: topic.name,
+    subjectId: topic.subjectId,
+    preScore,
+    postScore: score,
+    totalQuestions: quiz.length,
+    durationSec,
+    improvementPct,
+  });
+
+  if (!result) {
+    alert('บันทึกผลไม่สำเร็จ กรุณาลองใหม่อีกครั้ง');
+    return;
   }
+
+  setSavedResult(result);
+  setStage('summary');
+}
 
   function handleStepClick(step: StepKey) {
     // Only allow jumping to already-reached steps.

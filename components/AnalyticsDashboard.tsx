@@ -21,7 +21,6 @@ import {
   Users,
   ArrowRight,
   GraduationCap,
-  Trash2,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -35,7 +34,6 @@ import {
 import {
   aggregateByGrade,
   overallStats,
-  clearResults,
   getAllResults,
   type GradeAgg,
   type TestResult,
@@ -58,18 +56,12 @@ export function AnalyticsDashboard() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setResults(getAllResults());
-    setMounted(true);
-
-    const onResults = () => setResults(getAllResults());
-    const onStorage = () => setResults(getAllResults());
-    window.addEventListener('flashlearn_results_updated', onResults);
-    window.addEventListener('storage', onStorage);
-    return () => {
-      window.removeEventListener('flashlearn_results_updated', onResults);
-      window.removeEventListener('storage', onStorage);
-    };
+    getAllResults().then((r) => {
+      setResults(r);
+      setMounted(true);
+    });
   }, []);
+
 
   const byGrade = useMemo<GradeAgg[]>(() => aggregateByGrade(results), [results]);
   const overall = useMemo(() => overallStats(results), [results]);
@@ -92,12 +84,6 @@ export function AnalyticsDashboard() {
     'Post-test': Number(g.avgPost.toFixed(2)),
   }));
 
-  function handleClear() {
-    if (confirm('ต้องการล้างข้อมูลสถิติทั้งหมดในเครื่องนี้ใช่หรือไม่?')) {
-      clearResults();
-      setResults([]);
-    }
-  }
 
   if (!mounted) {
     return (
@@ -132,15 +118,6 @@ export function AnalyticsDashboard() {
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleClear}
-            aria-label="ล้างข้อมูล"
-            title="ล้างข้อมูลในเครื่องนี้"
-          >
-            <Trash2 className="h-4 w-4 text-muted-foreground" />
-          </Button>
         </div>
       </div>
 
@@ -383,7 +360,7 @@ export function AnalyticsDashboard() {
       )}
 
       <p className="text-center text-xs text-muted-foreground">
-        ข้อมูลเก็บในเครื่องของคุณเท่านั้น (localStorage) · ไม่มีการระบุตัวตน
+        ข้อมูลรวมจากผู้ใช้ทุกคน · ไม่มีการระบุตัวตน
       </p>
     </div>
   );
