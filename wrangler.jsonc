@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "main": ".open-next/worker.js",
-  "name": "nextjs",
+  "name": "flashlearn",
+  "pages_build_output_dir": "./out",
   "compatibility_date": "2026-10-19",
   "compatibility_flags": [
     "global_fetch_strictly_public"
