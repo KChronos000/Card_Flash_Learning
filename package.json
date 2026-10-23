@@ -1,5 +1,5 @@
 {
-  "name": "nextjs",
+  "name": "flashlearn",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,14 +8,10 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "npm run build && wrangler deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+    "deploy": "npm run build && wrangler pages deploy out --project-name flashlearn --branch main"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
-    "@netlify/plugin-nextjs": "^5.15.1",
     "@next/swc-wasm-nodejs": "13.5.1",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
@@ -46,12 +42,10 @@
     "@radix-ui/react-tooltip": "^1.1.2",
     "@supabase/supabase-js": "^2.118.0",
     "@types/node": "20.6.2",
-    "@types/react": "18.2.22",
-    "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "cmdk": "^1.0.0",
+    "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
     "eslint": "8.49.0",
@@ -61,12 +55,13 @@
     "next": "^16.4.2",
     "next-themes": "^0.3.0",
     "postcss": "8.4.30",
-    "react": "^18.3.1",
+    "react": "^19.3.1",
     "react-day-picker": "^8.10.1",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.3.1",
     "react-hook-form": "^7.53.0",
+    "react-is": "^19.3.1",
     "react-resizable-panels": "^2.1.3",
-    "recharts": "^2.12.7",
+    "recharts": "^3.10.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "3.3.3",
@@ -76,6 +71,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "wrangler": "^4.152.0"
   }
 }

@@ -192,7 +192,7 @@ export function AnalyticsDashboard() {
                     />
                     <Tooltip
                       cursor={{ fill: 'hsl(var(--muted))', opacity: 0.4 }}
-                      formatter={(v: number) => `${v.toFixed(2)} คะแนน`}
+                      formatter={(v) => `${Number(v).toFixed(2)} คะแนน`}
                     />
                     <Legend />
                     <Bar
@@ -241,7 +241,7 @@ export function AnalyticsDashboard() {
                       />
                       <Tooltip
                         cursor={{ fill: 'hsl(var(--muted))', opacity: 0.4 }}
-                        formatter={(v: number) => `+${v}%`}
+                        formatter={(v) => `+${v}%`}
                       />
                       <Bar dataKey="improvement" radius={[6, 6, 0, 0]}>
                         {byGrade.map((g) => (

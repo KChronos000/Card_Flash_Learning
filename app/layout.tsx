@@ -11,7 +11,7 @@ const notoThai = Noto_Sans_Thai({
 });
 
 export const metadata: Metadata = {
-  title: 'FlashLearn TH — Micro-Learning สำหรับ ม.ปลาย',
+  title: 'FlashLearn — Card-Learning สำหรับ ม.ปลาย',
   icons: '/favicon.ico', 
   description:
     'แอพฝึกการ์ดความจำ (Flashcards) และแบบทดสอบสั้นๆ สำหรับนักเรียนมัธยมปลาย เคมี ฟิสิกส์ ชีววิทยา และคณิตศาสตร์',
